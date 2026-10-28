@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><base target="_top"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#1f5c43;--gd:#143d2d;--gl:#e3efe7;--bg:#f4f7f3;--ink:#16231c;--mu:#667a6f;--ln:#dbe5de;--r:#c8402c;--rl:#fbe9e5;--a:#b97d0a;--al:#fbf0d9;--w:#fff}
+*{box-sizing:border-box}body{margin:0;font:16px/1.55 "Noto Sans TC",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font:inherit;color:inherit}button{cursor:pointer}:focus-visible{outline:3px solid #7fb899;outline-offset:2px}
+.mu{color:var(--mu)}h1{font-size:24px;font-weight:900;margin:0;letter-spacing:.02em}h2{font-size:17px;margin:0 0 8px}
+input[type=date],input[type=password],input:not([type]){border:1px solid var(--ln);border-radius:10px;padding:9px 12px;background:var(--w)}
+.lg{min-height:100vh;display:grid;grid-template-columns:1.1fr 1fr}
+.hero{background:var(--gd);color:#fff;padding:9vh 7vw;display:flex;flex-direction:column;justify-content:space-between}
+.hero .big{font-size:clamp(44px,7vw,84px);font-weight:900;line-height:1.05;letter-spacing:.04em}.hero .sub{font-size:20px;opacity:.85;margin-top:12px}
+.hero .dt{opacity:.7;border-top:1px solid #ffffff33;padding-top:14px}
+.lg form{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:8vh 8vw;max-width:520px;width:100%}.lg input{width:100%;padding:13px 14px;font-size:17px}
+.pri{background:var(--g);color:#fff;border:0;border-radius:10px;padding:12px 22px;font-weight:700}.pri:hover{background:var(--gd)}
+.ghost{background:var(--w);border:1px solid var(--ln);border-radius:10px;padding:11px 16px;font-weight:500}
+.ln{background:none;border:0;color:var(--g);font-weight:700;padding:0 0 6px}
+@media(max-width:760px){.lg{grid-template-columns:1fr}.hero{padding:36px 24px;gap:24px}.lg form{padding:28px 24px;max-width:none}}
+.bar{background:var(--gd);color:#fff;position:sticky;top:0;z-index:5}.bw{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;max-width:1000px;margin:0 auto}
+.brand b{font-size:19px;font-weight:900;letter-spacing:.06em}.brand span{margin-left:10px;opacity:.7;font-size:14px}
+.me{display:flex;align-items:center;gap:8px;font-size:14px}.me i{font-style:normal;background:#ffffff22;border-radius:99px;padding:1px 9px;font-size:12px}
+.me button{background:none;border:1px solid #ffffff44;color:#fff;border-radius:8px;padding:4px 10px;font-size:13px}
+.nav{display:flex;gap:2px;max-width:1000px;margin:0 auto;padding:0 12px;overflow-x:auto}
+.nav button{background:none;border:0;color:#ffffffb3;padding:10px 14px;font-weight:500;border-bottom:3px solid transparent;white-space:nowrap}.nav button.on{color:#fff;border-color:#f2b134;font-weight:700}
+main{max-width:1000px;margin:0 auto;padding:18px 16px 120px}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.chip{display:inline-block;font-size:13px;font-weight:700;border-radius:99px;padding:3px 12px}
+.chip.g{background:var(--gl);color:var(--g)}.chip.a{background:var(--al);color:var(--a)}.chip.r{background:var(--rl);color:var(--r)}
+.empty{padding:40px 16px;text-align:center;color:var(--mu);border:2px dashed var(--ln);border-radius:12px}
+.pcs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.pc{flex:none;min-width:80px;border:1px solid var(--ln);background:var(--w);border-radius:12px;padding:7px 14px;display:flex;flex-direction:column;align-items:center;line-height:1.35}
+.pc b{font-size:15px}.pc span{font-size:13px;opacity:.75}.pc i{font-style:normal;font-size:12px;color:var(--g);font-weight:700}
+.pc.on{background:var(--g);color:#fff;border-color:var(--g)}.pc.on i{color:#bfe5cf}
+.ban{background:var(--gd);color:#fff;border-radius:16px;padding:18px 20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin:12px 0}
+.bc{font-size:38px;font-weight:900;line-height:1.1}.bs{opacity:.8;margin:4px 0 8px}.bl{align-self:flex-end;min-width:210px}
+.lv{height:8px;background:#ffffff33;border-radius:9px;overflow:hidden;margin-bottom:6px}.lv i{display:block;height:100%;background:#f2b134}.bl span{font-size:14px;opacity:.9}
+.note{background:var(--al);color:#6f4a05;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(124px,1fr));gap:10px;margin-top:10px}
+.tile{position:relative;background:#f3faf5;border:2px solid #bcd8c8;border-radius:14px;padding:26px 8px 10px;text-align:center;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.tile b{display:block;font-size:19px}.tile em{display:block;font-style:normal;font-size:13px;font-weight:700;color:var(--g)}.tile small{display:block;color:var(--mu);font-size:12px}
+.tile .no{position:absolute;top:7px;left:11px;font-size:12px;color:var(--mu)}
+.tile[data-st="缺席"]{background:var(--r);border-color:var(--r);color:#fff}.tile[data-st="缺席"] em,.tile[data-st="缺席"] .no,.tile[data-st="缺席"] small{color:#fff}
+.tile .nt{display:none;width:100%;margin-top:6px;padding:5px 8px;font-size:13px}.tile[data-st="缺席"] .nt{display:block}
+.dock{position:fixed;left:0;right:0;bottom:0;background:var(--w);border-top:1px solid var(--ln);padding:10px 16px calc(10px + env(safe-area-inset-bottom));display:flex;gap:10px;align-items:center;justify-content:center;z-index:6}
+.dock #cnt{flex:1;max-width:420px}.dock #cnt b{color:var(--r);font-size:22px}
+.sl{display:grid;grid-template-columns:62px 1fr auto;align-items:center;gap:14px;background:var(--w);border:1px solid var(--ln);border-left:5px solid var(--a);border-radius:12px;padding:12px 14px;margin:8px 0;cursor:pointer}
+.sl.dn{border-left-color:var(--g)}.sl.lt{border-left-color:var(--r)}.pn{text-align:center;line-height:1.1}.pn b{display:block;font-size:30px;font-weight:900;color:var(--g)}.pn small{color:var(--mu);font-size:12px}.sb .t{font-weight:700;font-size:17px}
+.prog{background:var(--w);border:1px solid var(--ln);border-radius:14px;padding:16px;margin-bottom:18px}
+.bar2{display:flex;height:16px;border-radius:99px;overflow:hidden;background:#e9efea}.bar2 i{display:block}.bar2 .g{background:var(--g)}.bar2 .r{background:var(--r)}.bar2 .n{background:#c9d6ce}
+.pl{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;color:var(--mu)}.pl b{font-size:28px;font-weight:900;color:var(--ink);margin-right:4px}.pl .rr b{color:var(--r)}.pl .ab b{color:var(--a)}
+section{margin:22px 0}.sc{overflow-x:auto;background:var(--w);border:1px solid var(--ln);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}th{background:#edf3ee;text-align:left;color:var(--mu);font-weight:500}td,th{padding:9px 12px;border-bottom:1px solid var(--ln);white-space:nowrap}tr:last-child td{border:0}
+.bad{color:var(--r);font-weight:700}.ok{color:var(--g);font-weight:700}.fl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ac{display:flex;align-items:center;gap:10px;background:var(--w);border:1px solid var(--ln);border-radius:12px;padding:9px 12px;margin:6px 0;flex-wrap:wrap}.ac .m{flex:1;min-width:140px;font-weight:700}.ac small{color:var(--mu);font-weight:400;margin-left:6px}
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;display:none;z-index:9;max-width:90vw}
+</style></head><body><div id="app"></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+let U=null,T=null,timer=null,cur=null,SCH=null;
+const API_URL='https://script.google.com/macros/s/AKfycbwvheX1Tjq4ZmY72wIpkPR17gNsATQ0ved-LLJDlOKrDHmYd5CVHzfxF_o77rBwJxJS/exec';
+//const API_URL='請貼上 Apps Script 網頁應用程式網址(結尾是 /exec)';
+const rpc=async(f,...a)=>{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:f,args:a})});
+const j=await r.json();if(!j.ok)throw new Error(j.error);return j.data};
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt=d=>{const t=new Date(d+'T12:00:00');return `${t.getMonth()+1} 月 ${t.getDate()} 日　週${'日一二三四五六'[t.getDay()]}`};
+const mins=s=>{const [a,b]=s.split(':');return +a*60+ +b},nowM=()=>{const t=new Date();return t.getHours()*60+t.getMinutes()};
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2800)}
+async function run(f,...a){try{return await rpc(f,...a)}catch(e){const m=(e.message||e)+'';toast(m.replace(/^Error:\s*/,''));if(/逾時/.test(m))logout();throw e}}
+const NAV=[['dash','今日儀表板'],['proxy','代點名'],['q','出缺席查詢'],['t','教師帳號']];
+function page(h,tab){$('#app').innerHTML=`<header class="bar"><div class="bw"><div class="brand"><b>福瑞斯特</b><span>線上點名</span></div><div class="me">${esc(U.name)}<i>${esc(U.role)}</i><button onclick="pw()">改密碼</button><button onclick="logout()">登出</button></div></div>
+${U.role==='管理者'?`<nav class="nav">${NAV.map(([k,n])=>`<button class="${k===tab?'on':''}" onclick="adminView('${k}')">${n}</button>`).join('')}</nav>`:''}</header><main>${h}</main>`}
+function loginView(){clearInterval(timer);
+$('#app').innerHTML=`<div class="lg"><div class="hero"><div><div class="big">福瑞斯特<br>中小學</div><div class="sub">線上點名系統</div></div><div class="dt">${fmt(new Date().toLocaleDateString('sv'))}</div></div>
+<form onsubmit="return false"><h1>登入</h1><p class="mu" style="margin:0">帳號為您的姓名；初始密碼為生日月日四碼，例如 0315。</p>
+<input id="a" placeholder="帳號" autocomplete="username"><input id="p" type="password" placeholder="密碼" autocomplete="current-password"><button class="pri" id="go" type="button">登入</button></form></div>`;
+$('#p').addEventListener('keydown',e=>{if(e.key==='Enter')go()});$('#go').onclick=go;
+async function go(){const r=await run('login',$('#a').value,$('#p').value).catch(()=>null);if(!r)return;if(!r.ok)return toast(r.msg);
+U=r;T=r.token;if(r.usingInit)toast('您仍在使用初始密碼，建議按右上角「改密碼」更換');r.role==='管理者'?adminView('dash'):teacherView(r.today)}}
+function logout(){U=T=null;loginView()}
+async function pw(){const o=prompt('目前密碼');if(o===null)return;const n=prompt('新密碼'+(U.role==='管理者'?'(至少 4 碼)':'(四位數字)'));if(n===null)return;
+await run('changePw',T,o,n).then(()=>toast('密碼已更新')).catch(()=>0)}
+function tbl(r,h){return r.length?`<div class="sc"><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map(a=>`<tr>${a.map(v=>`<td>${typeof v==='string'&&v.startsWith('<')?v:esc(v)}</td>`).join('')}</tr>`).join('')}</table></div>`:'<div class="empty">沒有資料</div>'}
+
+/* ---- 點名名單(老師與管理者共用) ---- */
+function rollHTML(r,d){const x=r.slot;let live='';
+if(d===U.today&&x.start){const n=nowM(),a=mins(x.start),b=mins(x.end);if(n>=a&&n<=b)live=`<div class="lv"><i style="width:${Math.round((n-a)/(b-a)*100)}%"></i></div><span>上課中，距下課 ${b-n} 分鐘</span>`}
+return `<div class="ban"><div><div class="bc">${esc(x.cls)} 班</div><div class="bs">${esc(x.subject)}　第 ${x.period} 節　${x.start}–${x.end}${U.role==='管理者'?'　'+esc(x.teacher):''}</div>${r.done?'<span class="chip g">已點名，可修改</span>':''}</div><div class="bl">${live}</div></div>
+${r.warn?'<div class="note">尚未建立此分組的學生名單，目前顯示全年級學生。請只把本組缺席的學生點成「缺席」，出席者不用動；並請學務處在「分組名單」工作表建立名單。</div>':''}
+<div class="mu">預設全員出席。點一下姓名＝缺席，再點一下恢復出席。</div>
+<div class="grid" id="stu">${r.students.map(s=>{const st=s.st==='出席'?'出席':'缺席';return `<div class="tile" data-id="${s.id}" data-st="${st}" onclick="tog(this)"><span class="no">${s.no}</span><b>${esc(s.name)}</b>${r.warn?`<small>${esc(s.cls)}</small>`:''}<em>${st}</em><input class="nt" placeholder="備註（選填）" value="${esc(s.note)}" onclick="event.stopPropagation()"></div>`}).join('')}</div>
+<div class="dock"><div id="cnt"></div><button class="ghost" onclick="allIn()">全部出席</button><button class="pri" onclick="save()">儲存點名</button></div>`}
+function setSt(t,v){t.dataset.st=v;t.querySelector('em').textContent=v}
+function tog(t){setSt(t,t.dataset.st==='缺席'?'出席':'缺席');count()}
+function count(){const n=document.querySelectorAll('#stu .tile').length,a=document.querySelectorAll('#stu .tile[data-st="缺席"]').length;$('#cnt').innerHTML=`應到 ${n} 人　<b>${a}</b> 人缺席`}
+function allIn(){document.querySelectorAll('#stu .tile').forEach(t=>setSt(t,'出席'));count()}
+async function save(){const list=[...document.querySelectorAll('#stu .tile')].map(e=>({id:e.dataset.id,st:e.dataset.st,note:e.querySelector('.nt').value}));
+const r=await run('saveAttendance',T,cur.d,cur.p,cur.c,list).catch(()=>null);if(!r)return;toast(`已儲存，缺席 ${r.abs} 人`);
+if(U.role==='管理者')return adminView('proxy');
+SCH.items[SCH.i].done=true;const nx=SCH.items.findIndex((y,j)=>j>SCH.i&&!y.done);pick(nx>=0?nx:SCH.i)}
+
+/* ---- 教師:開啟就直接顯示本節名單 ---- */
+async function teacherView(d){clearInterval(timer);d=d||U.today;
+page(`<div class="hd"><div><h1>${fmt(d)}</h1><div id="wk" class="mu">&nbsp;</div></div><input type="date" id="d" value="${d}" max="${U.today}"></div><div id="chips"></div><div id="roll" class="mu">載入中…</div>`);
+$('#d').onchange=()=>teacherView($('#d').value||U.today);
+const r=await run('getSchedule',T,d).catch(()=>null);if(!r)return;SCH={d,items:r.items,i:0};
+$('#wk').textContent=(r.week>0?`第 ${r.week} 週・${r.type}`:'')+(r.items.length?`　共 ${r.items.length} 堂，已點名 ${r.items.filter(x=>x.done).length} 堂`:'');
+if(!r.items.length){$('#roll').innerHTML=`<div class="empty">${esc(r.msg)}</div>`;return}
+let i;if(d!==U.today)i=Math.max(0,r.items.findIndex(x=>!x.done));else{const n=nowM(),L=r.items;
+i=L.findIndex(x=>x.start&&mins(x.start)<=n&&n<=mins(x.end)+5);if(i<0)i=L.findIndex(x=>x.start&&mins(x.start)>n);if(i<0)i=L.length-1}
+pick(i)}
+async function pick(i){SCH.i=i;const x=SCH.items[i];
+$('#chips').innerHTML=`<div class="pcs">${SCH.items.map((y,j)=>`<button class="pc ${j===i?'on':''}" onclick="pick(${j})"><b>第${y.period}節</b><span>${esc(y.cls)}</span>${y.done?'<i>已點</i>':''}</button>`).join('')}</div>`;
+$('#roll').innerHTML='<div class="mu">載入名單…</div>';
+const r=await run('getRoster',T,SCH.d,x.period,x.cls).catch(()=>null);if(!r||SCH.i!==i)return;
+cur={d:SCH.d,p:x.period,c:x.cls};$('#roll').innerHTML=rollHTML(r,SCH.d);count()}
+
+/* ---- 學務處 ---- */
+function adminView(tab){clearInterval(timer);page('<div id="pg"></div>',tab);({dash,proxy,q,t}[tab])()}
+async function openR(d,p,c){const r=await run('getRoster',T,d,p,c).catch(()=>null);if(!r)return;cur={d,p,c};clearInterval(timer);
+page(`<button class="ln" onclick="adminView('proxy')">‹ 返回代點名</button><div class="mu">${fmt(d)}</div>${rollHTML(r,d)}`,'proxy');count()}
+const slot=(x,d)=>`<div class="sl ${x.done?'dn':x.late?'lt':''}" onclick="openR('${d}',${x.period},'${esc(x.cls)}')"><div class="pn"><b>${x.period}</b><small>${x.start}</small></div>
+<div class="sb"><div class="t">${esc(x.cls)} 班　${esc(x.subject)}</div><div class="mu">${x.start}–${x.end}　${esc(x.teacher)}</div></div><span class="chip ${x.done?'g':x.late?'r':'a'}">${x.done?'已點名':x.late?'逾時未點':'待點名'}</span></div>`;
+async function dash(){$('#pg').innerHTML=`<div class="hd"><div><h1>今日出缺席</h1><div class="mu" id="up">&nbsp;</div></div><input type="date" id="d" value="${dash.d||U.today}"></div><div id="c"></div>`;
+$('#d').onchange=()=>{dash.d=$('#d').value;load()};
+async function load(){const d=$('#d').value,r=await run('adminDay',T,d).catch(()=>null);if(!r||!$('#c'))return;const s=r.stats,pend=s.total-s.done-s.late;
+$('#up').textContent=fmt(d)+(r.week>0?`　第 ${r.week} 週・${r.type}`:'')+'　更新於 '+new Date().toLocaleTimeString('zh-TW',{hour12:false});
+$('#c').innerHTML=r.msg?`<div class="empty">${esc(r.msg)}</div>`:`<div class="prog"><div class="bar2"><i class="g" style="flex:${s.done}"></i><i class="r" style="flex:${s.late}"></i><i class="n" style="flex:${pend}"></i></div>
+<div class="pl"><span><b>${s.done}</b>已點名</span><span class="rr"><b>${s.late}</b>逾時未點</span><span><b>${pend}</b>待點名</span><span class="ab"><b>${s.abs}</b>人缺席</span></div></div>
+<section><h2>缺席名單</h2>${tbl(r.abs.map(x=>[x.period,x.cls,x.no,x.name,'<span class="bad">缺席</span>',x.subject,x.teacher,x.note]),['節','班','座','姓名','狀態','科目','任課教師','備註'])}</section>
+${s.late?`<section><h2>逾時未點名（點擊可代點）</h2>${r.slots.filter(x=>x.late).map(x=>slot(x,d)).join('')}</section>`:''}
+<section><h2>全部課堂</h2>${tbl(r.slots.map(x=>[x.period,x.cls,x.subject,x.teacher,x.done?'<span class="ok">已點名</span>':x.late?'<span class="bad">未點名</span>':'待點名']),['節','班','科目','任課教師','狀態'])}</section>`}
+dash.d=dash.d||U.today;await load();timer=setInterval(load,(U.refresh||15)*1000)}
+async function proxy(){$('#pg').innerHTML=`<div class="hd"><div><h1>代點名</h1><div class="mu">可替任何老師的課點名，或修改已點名的紀錄</div></div><div class="fl"><input type="date" id="d" value="${proxy.d||U.today}" max="${U.today}"><input id="f" placeholder="篩選班級或教師"></div></div><div id="l" class="mu">載入中…</div>`;
+let S=[];const draw=()=>{const k=$('#f').value.trim(),d=$('#d').value;$('#l').innerHTML=S.filter(x=>!k||x.cls.includes(k)||x.teacher.includes(k)).map(x=>slot(x,d)).join('')||'<div class="empty">沒有符合的課堂</div>'};
+const load=async()=>{proxy.d=$('#d').value;const r=await run('adminDay',T,proxy.d).catch(()=>null);if(!r)return;S=r.slots;if(r.msg)$('#l').innerHTML=`<div class="empty">${esc(r.msg)}</div>`;else draw()};
+$('#d').onchange=load;$('#f').oninput=draw;load()}
+async function q(){const d=U.today;$('#pg').innerHTML=`<div class="hd"><h1>出缺席查詢</h1></div><div class="fl"><input type="date" id="f" value="${d}"><input type="date" id="e" value="${d}"><input id="c" placeholder="班級 如 701" size="9"><input id="k" placeholder="學生姓名" size="9"><button class="pri" id="go">查詢</button></div><div id="r"></div>`;
+$('#go').onclick=async()=>{const r=await run('adminQuery',T,$('#f').value,$('#e').value,$('#c').value.trim(),$('#k').value,'').catch(()=>null);if(r)$('#r').innerHTML=`<p class="mu">共 ${r.length} 筆缺席紀錄</p>`+tbl(r.map(x=>[x.date,x.period,x.cls,x.no,x.name,x.subject,x.teacher,x.note]),['日期','節','班','座','姓名','科目','任課教師','備註'])}}
+async function t(){const r=await run('adminTeachers',T).catch(()=>null);if(!r)return;
+$('#pg').innerHTML=`<div class="hd"><div><h1>教師帳號</h1><div class="mu">未設定初始碼的教師無法登入。輸入生日月日四碼（如 0315），也可用來重設忘記的密碼或解除鎖定。</div></div></div>${r.map(x=>`<div class="ac"><span class="m">${esc(x.name)}<small>${esc(x.acct)}　${esc(x.role)}</small></span>
+<span class="chip ${x.locked?'r':x.hasPw?'g':x.hasCode?'a':'r'}">${x.locked?'已鎖定':x.hasPw?'已自訂密碼':x.hasCode?'使用初始碼':'未設定'}</span><input id="c_${esc(x.acct)}" placeholder="新初始碼" size="8"><button class="ghost" onclick="setC('${esc(x.acct)}')">設定</button></div>`).join('')}`}
+async function setC(a){const v=document.getElementById('c_'+a).value;if(await run('adminSetCode',T,a,v).catch(()=>0)){toast('已設定');t()}}
+loginView();
+</script></body></html>
