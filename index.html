@@ -103,7 +103,7 @@ function page(h,tab){$('#app').innerHTML=`<header class="bar"><div class="bw"><d
 ${U.role==='管理者'?`<nav class="nav">${NAV.map(([k,n])=>`<button class="${k===tab?'on':''}" onclick="adminView('${k}')">${tr(n)}</button>`).join('')}</nav>`:''}</header><main>${h}</main>`}
 function loginView(){clearInterval(timer);VIEW=loginView;
 $('#app').innerHTML=`<div class="lg"><div class="hero"><div><div class="big">${tr('福瑞斯特<br>中小學')}</div><div class="sub">${tr('線上點名系統')}</div></div><div class="dt">${fmt(new Date().toLocaleDateString('sv'))}</div></div>
-<form onsubmit="return false">${langBtn()}<h1>${tr('登入')}</h1><p class="mu" style="margin:0">${tr('帳號為您的姓名；初始密碼為生日月日四碼，例如 0315。')}</p>
+<form onsubmit="return false">${langBtn()}<h1>${tr('登入')}</h1><p class="mu" style="margin:0">${tr('帳號為您的姓名；初始密碼為0000。')}</p>
 <input id="a" placeholder="${tr('帳號')}" autocomplete="username"><input id="p" type="password" placeholder="${tr('密碼')}" autocomplete="current-password"><button class="pri" id="go" type="button">${tr('登入')}</button></form></div>`;
 $('#p').addEventListener('keydown',e=>{if(e.key==='Enter')go()});$('#go').onclick=go;
 async function go(){const r=await run('login',$('#a').value,$('#p').value).catch(()=>null);if(!r)return;if(!r.ok)return toast(r.msg);
