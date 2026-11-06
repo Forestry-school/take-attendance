@@ -65,7 +65,7 @@ const r=await fetch(window.API_URL,{method:'POST',headers:{'Content-Type':'text/
 const j=await r.json();if(!j.ok)throw new Error(j.error);return j.data};
 /* ---- 中英文 ---- */
 const EN={'福瑞斯特<br>中小學':'Forestry<br>School','福瑞斯特':'Forestry School','線上點名':'Attendance','線上點名系統':'Online Attendance System','登入':'Sign in',
-'帳號為您的姓名；初始密碼為0000。':'Your account is your name. The initial password is your birthday as MMDD, e.g. 0315.','帳號':'Account','密碼':'Password',
+'帳號為您的姓名；初始密碼為0000。':'Your account is your name. The initial password is 0000.','帳號':'Account','密碼':'Password',
 '您仍在使用初始密碼，建議按右上角「改密碼」更換':'You are using the initial password. Please change it with "Change password".','改密碼':'Change password','登出':'Sign out',
 '目前密碼':'Current password','新密碼(至少 4 碼)':'New password (min. 4 characters)','新密碼(四位數字)':'New password (4 digits)','密碼已更新':'Password updated','管理者':'Admin','教師':'Teacher','沒有資料':'No data',
 '{c} 班':'Class {c}','第 {p} 節':'Period {p}','第{p}節':'Period {p}','已點名，可修改':'Submitted — you can edit','上課中，距下課 {m} 分鐘':'In session — {m} min left',
