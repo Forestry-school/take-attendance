@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"><head><script src="config.js"></script><meta charset="utf-8"><title>福瑞斯特中小學－點名系統</title>
+<html lang="zh-Hant"><head><script src="config.js"></script><meta charset="utf-8">
+<title>福瑞斯特中小學－點名系統</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -64,7 +65,7 @@ const rpc=async(f,...a)=>{if(!window.API_URL||!/^https:\/\/script\.google\.com/.
 const r=await fetch(window.API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn:f,args:a})});
 const j=await r.json();if(!j.ok)throw new Error(j.error);return j.data};
 /* ---- 中英文 ---- */
-const EN={'福瑞斯特<br>中小學':'Forestry<br>School','福瑞斯特':'Forestry School','線上點名':'Attendance','線上點名系統':'Online Attendance System','登入':'Sign in',
+const EN={'福瑞斯特<br>中小學':'Forestry<br>School','福瑞斯特':'Forestry School','福瑞斯特中小學':'Forestry School','線上點名':'Attendance','點名系統':'Attendance System','線上點名系統':'Online Attendance System','登入':'Sign in',
 '帳號為您的姓名；初始密碼為0000。':'Your account is your name. The initial password is 0000.','帳號':'Account','密碼':'Password',
 '您仍在使用初始密碼，建議按右上角「改密碼」更換':'You are using the initial password. Please change it with "Change password".','改密碼':'Change password','登出':'Sign out',
 '目前密碼':'Current password','新密碼(至少 4 碼)':'New password (min. 4 characters)','新密碼(四位數字)':'New password (4 digits)','密碼已更新':'Password updated','管理者':'Admin','教師':'Teacher','沒有資料':'No data',
@@ -72,7 +73,7 @@ const EN={'福瑞斯特<br>中小學':'Forestry<br>School','福瑞斯特':'Fores
 '尚未建立此分組的學生名單，目前顯示全年級學生。請只把本組缺席的學生點成「缺席」，出席者不用動；並請學務處在「分組名單」工作表建立名單。':'No roster has been set for this group, so the whole grade is shown. Only mark students of YOUR group who are absent; leave the others untouched. Please ask the Office of Student Affairs to set up the group roster.',
 '預設全員出席。點一下姓名＝缺席，再點一下恢復出席。':'Everyone is Present by default. Tap a student to mark Absent; tap again to undo.','備註（選填）':'Note (optional)','出席':'Present','缺席':'Absent',
 '應到 {n} 人　<b>{a}</b> 人缺席':'{n} students　<b>{a}</b> absent','全部出席':'All present','儲存點名':'Save','已儲存，缺席 {a} 人':'Saved. {a} absent',
-'第 {w} 週・{t}':'Week {w} · {t}','單週':'Odd week','雙週':'Even week','　共 {n} 堂，已點名 {k} 堂':' · {n} classes, {k} submitted','已點':'Done','載入中…':'Loading…','載入名單…':'Loading roster…',
+'單週':'Odd week','雙週':'Even week','　共 {n} 堂，已點名 {k} 堂':' · {n} classes, {k} submitted','已點':'Done','載入中…':'Loading…','載入名單…':'Loading roster…',
 '今日儀表板':'Dashboard','代點名':'Take attendance','出缺席查詢':'Records','教師帳號':'Accounts','‹ 返回代點名':'‹ Back','今日出缺席':'Daily overview','　更新於 ':' · Updated ',
 '已點名':'Submitted','逾時未點':'Overdue','待點名':'Pending','人缺席':'absent','缺席名單':'Absent students','逾時未點名（點擊可代點）':'Overdue (tap to take attendance)','全部課堂':'All classes','未點名':'Missing',
 '節':'Per.','班':'Class','座':'No.','姓名':'Name','狀態':'Status','科目':'Subject','任課教師':'Teacher','備註':'Note','日期':'Date',
@@ -90,16 +91,19 @@ const bm=m=>{m=String(m||'').replace(/^Error:\s*/,'');if(LANG!=='en')return m;if
 if(x=m.match(/^不在本學期上課期間（(.+) ～ (.+)）$/))return `Outside the semester (${x[1]} – ${x[2]})`;if(x=m.match(/^放假\/停課：(.*)$/))return 'Holiday / no classes'+(x[1]?': '+x[1]:'');return m};
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmt=d=>{const t=new Date(d+'T12:00:00');return LANG==='en'?t.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}):`${t.getMonth()+1} 月 ${t.getDate()} 日　週${'日一二三四五六'[t.getDay()]}`};
-const wkTxt=(w,t)=>tr('第 {w} 週・{t}',{w,t:tr(t)});
+/* 週別顯示：學期週次・單雙週・四週循環。後端有回傳 cycle 就用它，否則以 (週次-1)%4+1 推算 */
+const wkTxt=(w,t,c)=>{c=c||((w-1)%4)+1;
+return LANG==='en'?`Week ${w} · ${t==='單週'?'Odd':'Even'} · Cycle ${c}/4`:`第 ${w} 週・${t}・循環第 ${c} 週`};
+function setTitle(){document.title=LANG==='en'?'Forestry School – Attendance System':'福瑞斯特中小學－點名系統'}
 const mins=s=>{const [a,b]=s.split(':');return +a*60+ +b},nowM=()=>{const t=new Date();return t.getHours()*60+t.getMinutes()};
 const langBtn=()=>`<button class="lang" onclick="setLang()">${LANG==='en'?'中文':'English'}</button>`;
 function setLang(){PEND=$('#stu')?[...document.querySelectorAll('#stu .tile')].map(e=>[e.dataset.id,e.dataset.st,e.querySelector('.nt').value]):null;
-LANG=LANG==='en'?'zh':'en';try{localStorage.setItem('lang',LANG)}catch(e){}document.documentElement.lang=LANG==='en'?'en':'zh-Hant';VIEW&&VIEW()}
+LANG=LANG==='en'?'zh':'en';try{localStorage.setItem('lang',LANG)}catch(e){}document.documentElement.lang=LANG==='en'?'en':'zh-Hant';setTitle();VIEW&&VIEW()}
 function applyPend(){if(!PEND)return;PEND.forEach(([id,st,nt])=>{const t=document.querySelector(`#stu .tile[data-id="${id}"]`);if(t){setSt(t,st);t.querySelector('.nt').value=nt}});PEND=null;count()}
 function toast(m){const t=$('#toast');t.textContent=bm(m);t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',2800)}
 async function run(f,...a){try{return await rpc(f,...a)}catch(e){const m=(e.message||e)+'';toast(m);if(/逾時/.test(m))logout();throw e}}
 const NAV=[['dash','今日儀表板'],['proxy','代點名'],['q','出缺席查詢'],['t','教師帳號']];
-function page(h,tab){$('#app').innerHTML=`<header class="bar"><div class="bw"><div class="brand"><b>${tr('福瑞斯特')}</b><span>${tr('線上點名')}</span></div><div class="me">${esc(U.name)}<i>${tr(U.role)}</i><button onclick="setLang()">${LANG==='en'?'中文':'EN'}</button><button onclick="pw()">${tr('改密碼')}</button><button onclick="logout()">${tr('登出')}</button></div></div>
+function page(h,tab){$('#app').innerHTML=`<header class="bar"><div class="bw"><div class="brand"><b>${tr('福瑞斯特中小學')}</b><span>${tr('點名系統')}</span></div><div class="me">${esc(U.name)}<i>${tr(U.role)}</i><button onclick="setLang()">${LANG==='en'?'中文':'EN'}</button><button onclick="pw()">${tr('改密碼')}</button><button onclick="logout()">${tr('登出')}</button></div></div>
 ${U.role==='管理者'?`<nav class="nav">${NAV.map(([k,n])=>`<button class="${k===tab?'on':''}" onclick="adminView('${k}')">${tr(n)}</button>`).join('')}</nav>`:''}</header><main>${h}</main>`}
 function loginView(){clearInterval(timer);VIEW=loginView;
 $('#app').innerHTML=`<div class="lg"><div class="hero"><div><div class="big">${tr('福瑞斯特<br>中小學')}</div><div class="sub">${tr('線上點名系統')}</div></div><div class="dt">${fmt(new Date().toLocaleDateString('sv'))}</div></div>
@@ -136,7 +140,7 @@ async function teacherView(d,keep){clearInterval(timer);d=d||U.today;VIEW=()=>te
 page(`<div class="hd"><div><h1>${fmt(d)}</h1><div id="wk" class="mu">&nbsp;</div></div><input type="date" id="d" value="${d}" max="${U.today}"></div><div id="chips"></div><div id="roll" class="mu">${tr('載入中…')}</div>`);
 $('#d').onchange=()=>teacherView($('#d').value||U.today);
 const r=await run('getSchedule',T,d).catch(()=>null);if(!r)return;SCH={d,items:r.items,i:0};
-$('#wk').textContent=(r.week>0?wkTxt(r.week,r.type):'')+(r.items.length?tr('　共 {n} 堂，已點名 {k} 堂',{n:r.items.length,k:r.items.filter(x=>x.done).length}):'');
+$('#wk').textContent=(r.week>0?wkTxt(r.week,r.type,r.cycle):'')+(r.items.length?tr('　共 {n} 堂，已點名 {k} 堂',{n:r.items.length,k:r.items.filter(x=>x.done).length}):'');
 if(!r.items.length){$('#roll').innerHTML=`<div class="empty">${esc(bm(r.msg))}</div>`;return}
 let i=keep;if(i===undefined){if(d!==U.today)i=Math.max(0,r.items.findIndex(x=>!x.done));else{const n=nowM(),L=r.items;
 i=L.findIndex(x=>x.start&&mins(x.start)<=n&&n<=mins(x.end)+5);if(i<0)i=L.findIndex(x=>x.start&&mins(x.start)>n);if(i<0)i=L.length-1}}
@@ -156,7 +160,7 @@ const slot=(x,d)=>`<div class="sl ${x.done?'dn':x.late?'lt':''}" onclick="openR(
 async function dash(){$('#pg').innerHTML=`<div class="hd"><div><h1>${tr('今日出缺席')}</h1><div class="mu" id="up">&nbsp;</div></div><input type="date" id="d" value="${dash.d||U.today}"></div><div id="c"></div>`;
 $('#d').onchange=()=>{dash.d=$('#d').value;load()};
 async function load(){const d=$('#d').value,r=await run('adminDay',T,d).catch(()=>null);if(!r||!$('#c'))return;const s=r.stats,pend=s.total-s.done-s.late;
-$('#up').textContent=fmt(d)+(r.week>0?'　'+wkTxt(r.week,r.type):'')+tr('　更新於 ')+new Date().toLocaleTimeString(LANG==='en'?'en-GB':'zh-TW',{hour12:false});
+$('#up').textContent=fmt(d)+(r.week>0?'　'+wkTxt(r.week,r.type,r.cycle):'')+tr('　更新於 ')+new Date().toLocaleTimeString(LANG==='en'?'en-GB':'zh-TW',{hour12:false});
 $('#c').innerHTML=r.msg?`<div class="empty">${esc(bm(r.msg))}</div>`:`<div class="prog"><div class="bar2"><i class="g" style="flex:${s.done}"></i><i class="r" style="flex:${s.late}"></i><i class="n" style="flex:${pend}"></i></div>
 <div class="pl"><span><b>${s.done}</b>${tr('已點名')}</span><span class="rr"><b>${s.late}</b>${tr('逾時未點')}</span><span><b>${pend}</b>${tr('待點名')}</span><span class="ab"><b>${s.abs}</b>${tr('人缺席')}</span></div></div>
 <section><h2>${tr('缺席名單')}</h2>${tbl(r.abs.map(x=>[x.period,x.cls,x.no,x.name,`<span class="bad">${tr('缺席')}</span>`,sub(x.subject),x.teacher,x.note]),['節','班','座','姓名','狀態','科目','任課教師','備註'])}</section>
@@ -173,5 +177,5 @@ async function t(){const r=await run('adminTeachers',T).catch(()=>null);if(!r)re
 $('#pg').innerHTML=`<div class="hd"><div><h1>${tr('教師帳號')}</h1><div class="mu">${tr('未設定初始碼的教師無法登入。輸入生日月日四碼（如 0315），也可用來重設忘記的密碼或解除鎖定。')}</div></div></div>${r.map(x=>`<div class="ac"><span class="m">${esc(x.name)}<small>${esc(x.acct)}　${tr(x.role)}</small></span>
 <span class="chip ${x.locked?'r':x.hasPw?'g':x.hasCode?'a':'r'}">${tr(x.locked?'已鎖定':x.hasPw?'已自訂密碼':x.hasCode?'使用初始碼':'未設定')}</span><input id="c_${esc(x.acct)}" placeholder="${tr('新初始碼')}" size="8"><button class="ghost" onclick="setC('${esc(x.acct)}')">${tr('設定')}</button></div>`).join('')}`}
 async function setC(a){const v=document.getElementById('c_'+a).value;if(await run('adminSetCode',T,a,v).catch(()=>0)){toast('已設定');t()}}
-document.documentElement.lang=LANG==='en'?'en':'zh-Hant';loginView();
+setTitle();document.documentElement.lang=LANG==='en'?'en':'zh-Hant';loginView();
 </script></body></html>
