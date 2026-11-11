@@ -82,7 +82,7 @@ const EN={'福瑞斯特<br>中小學':'Forestry<br>School','福瑞斯特':'Fores
 '未設定初始碼的教師無法登入。輸入生日月日四碼（如 0315），也可用來重設忘記的密碼或解除鎖定。':'Teachers without an initial code cannot sign in. Enter a 4-digit code (e.g. 0315); this also resets a forgotten password or unlocks an account.',
 '已鎖定':'Locked','已自訂密碼':'Custom password','使用初始碼':'Initial code','未設定':'Not set','新初始碼':'New initial code','設定':'Set','已設定':'Saved',
 '帳號或密碼錯誤':'Incorrect account or password','登入失敗過多，帳號暫時鎖定，請 10 分鐘後再試':'Too many failed attempts. Account locked for 10 minutes.','登入逾時，請重新登入':'Session expired. Please sign in again.',
-'無權限':'No permission','目前密碼不正確':'Current password is incorrect','密碼需為四位數字':'Password must be 4 digits','密碼至少 4 碼':'Password must be at least 4 characters','不能點未來的日期':'Cannot take attendance for a future date',
+'無權限':'No permission','請設定新密碼':'Set a new password','首次登入或仍使用初始密碼，必須先更改密碼才能使用系統。':'You are using the initial password. You must change it before using the system.','再輸入一次新密碼':'Confirm new password','兩次輸入的密碼不一致':'Passwords do not match','確認並進入':'Confirm and continue','請先修改密碼':'Please change your password first','新密碼不可與目前密碼相同':'The new password must differ from the current one','不可使用 0000 作為密碼':'0000 cannot be used as a password','目前密碼不正確':'Current password is incorrect','密碼需為四位數字':'Password must be 4 digits','密碼至少 4 碼':'Password must be at least 4 characters','不能點未來的日期':'Cannot take attendance for a future date',
 '超過 7 天，請洽學務處補登':'Over 7 days ago — please contact the Office of Student Affairs','找不到這堂課':'Class not found','週末無課程':'No classes on weekends','這天沒有您的課':'You have no classes on this day'};
 const SUBJ={'國文':'Chinese','國語':'Chinese','國語文':'Chinese','數學':'Math','英文':'English','自然':'Science','社會':'Social Studies','生活':'Living','健康':'Health','公民':'Civics','地理':'Geography','歷史':'History','體育':'P.E.','音樂':'Music','美術':'Art','視覺藝術':'Visual Arts','表演藝術':'Performing Arts','綜合':'Integrated Activities','資訊科技':'IT','生活科技':'Living Technology','資訊/生活科技':'IT / Living Tech','童軍':'Scouts','家政':'Home Economics','輔導':'Guidance','課輔':'Tutoring','本土語':'Local Language','班/週會':'Homeroom / Assembly','國際視野':'Global Vision','奧數':'Math Olympiad','邏輯思維':'Logical Thinking','閱讀理解':'Reading Comprehension','閱讀與寫作':'Reading & Writing','悅讀世界':'Reading World','漫遊世界':'World Tour','硬筆書法':'Handwriting','小提琴':'Violin','律動':'Rhythm & Movement','高爾夫':'Golf','趣讀古今文學':'Classical Literature','生活(美)':'Living (Art)','生活(音)':'Living (Music)'};
 const tr=(k,v)=>{let s=(LANG==='en'&&EN[k])||k;if(v)for(const x in v)s=s.split('{'+x+'}').join(v[x]);return s};
@@ -110,8 +110,17 @@ $('#app').innerHTML=`<div class="lg"><div class="hero"><div><div class="big">${t
 <form onsubmit="return false">${langBtn()}<h1>${tr('登入')}</h1><p class="mu" style="margin:0">${tr('帳號為您的姓名；初始密碼為0000。')}</p>
 <input id="a" placeholder="${tr('帳號')}" autocomplete="username"><input id="p" type="password" placeholder="${tr('密碼')}" autocomplete="current-password"><button class="pri" id="go" type="button">${tr('登入')}</button></form></div>`;
 $('#p').addEventListener('keydown',e=>{if(e.key==='Enter')go()});$('#go').onclick=go;
-async function go(){const r=await run('login',$('#a').value,$('#p').value).catch(()=>null);if(!r)return;if(!r.ok)return toast(r.msg);
-U=r;T=r.token;if(r.usingInit)toast('您仍在使用初始密碼，建議按右上角「改密碼」更換');r.role==='管理者'?adminView('dash'):teacherView(r.today)}}
+async function go(){const pv=$('#p').value.trim(),r=await run('login',$('#a').value,pv).catch(()=>null);if(!r)return;if(!r.ok)return toast(r.msg);
+U=r;T=r.token;if(r.usingInit)return forcePw(pv);r.role==='管理者'?adminView('dash'):teacherView(r.today)}}
+/* 仍是初始密碼：必須先改密碼才能進入(後端也會擋掉其他所有操作) */
+function forcePw(old){clearInterval(timer);VIEW=()=>forcePw(old);const adm=U.role==='管理者';
+$('#app').innerHTML=`<div class="lg"><div class="hero"><div><div class="big">${tr('福瑞斯特<br>中小學')}</div><div class="sub">${tr('線上點名系統')}</div></div><div class="dt">${esc(U.name)}</div></div>
+<form onsubmit="return false">${langBtn()}<h1>${tr('請設定新密碼')}</h1><p class="mu" style="margin:0">${tr('首次登入或仍使用初始密碼，必須先更改密碼才能使用系統。')}</p>
+<input id="n1" type="password" ${adm?'':'inputmode="numeric" maxlength="4"'} placeholder="${tr(adm?'新密碼(至少 4 碼)':'新密碼(四位數字)')}" autocomplete="new-password"><input id="n2" type="password" ${adm?'':'inputmode="numeric" maxlength="4"'} placeholder="${tr('再輸入一次新密碼')}" autocomplete="new-password"><button class="pri" id="ok" type="button">${tr('確認並進入')}</button><button class="ln" type="button" onclick="logout()">${tr('登出')}</button></form></div>`;
+$('#n2').addEventListener('keydown',e=>{if(e.key==='Enter')fin()});$('#ok').onclick=fin;
+async function fin(){const a=$('#n1').value.trim(),b=$('#n2').value.trim();
+if(adm?a.length<4:!/^\d{4}$/.test(a))return toast(adm?'密碼至少 4 碼':'密碼需為四位數字');if(a!==b)return toast('兩次輸入的密碼不一致');
+const ok=await run('changePw',T,old,a).catch(()=>null);if(!ok)return;U.usingInit=false;toast('密碼已更新');adm?adminView('dash'):teacherView(U.today)}}
 function logout(){U=T=null;loginView()}
 async function pw(){const o=prompt(tr('目前密碼'));if(o===null)return;const n=prompt(tr(U.role==='管理者'?'新密碼(至少 4 碼)':'新密碼(四位數字)'));if(n===null)return;
 await run('changePw',T,o,n).then(()=>toast('密碼已更新')).catch(()=>0)}
